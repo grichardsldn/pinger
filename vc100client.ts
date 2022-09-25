@@ -1,3 +1,4 @@
+const fetch = require('node-fetch')
 
 export type Type = 'NORMAL' | 'BIG'
 
