@@ -1,4 +1,5 @@
 import * as child from 'child_process';
+import * as VC100 from './vc100client';
 
 type PingSuccess = {
   sent: number,
@@ -46,6 +47,53 @@ const ping = async (host: string): Promise<PingResult> => {
   })
 }
 
-ping('www.google.com').then((res)=> {console.log(JSON.stringify(res, null, 2))})
+const main = async () => {
+  const pingData = await ping('www.google.com')
+  console.log(JSON.stringify(pingData, null, 2))
+  const row = 1;
+  // const address = 'http://starbug1.local:1664'
+  const address = 'http://localhost:1664'
+  if (!!pingData.error) {
+    await VC100.postMessage('ping', {
+      row,
+      len: 80,
+      msg: pingData.error.error,
+      colour: 'red',
+      style: 'NORMAL',
+    }, address)
+  }
+  let warn=false
+  if (!!pingData.success) {
+    const data = pingData.success
+    if (data.received !== data.sent) {
+      warn = true;
+    }
+    const jitter = data.max - data.min
+    if (jitter > data.min) {
+      warn=true;
+    }
 
+    if (data.max > 10) {
+      warn=true;
+    }
+   
+    const times = `${Math.floor(data.min)}-${Math.floor(data.max)}ms `
+    const packets = `${data.received}/${data.sent} `
+    const colour = warn ? {colour: 'red' } : {}
+    await VC100.postMessage('ping', {
+      row,
+      len: 80,
+      msg: `${pingData.host} ${warn?packets:''} ${times}`,
+      style: 'NORMAL',
+      ...colour
+    }, address)
+  }
+
+  console.log(JSON.stringify(pingData, null, 2))
+}
+
+main().then((result)=> {
+})
+
+export {};
 
