@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.ts",
   "scripts": {
+    "build": "tsc",
     "pinger": "ts-node index.ts",
     "lint:fix": "eslint --fix --ext .ts,.tsx .",
     "lint": "eslint --ext .ts,.tsx ."
