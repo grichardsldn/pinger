@@ -51,8 +51,8 @@ const main = async () => {
   const pingData = await ping('www.google.com')
   console.log(JSON.stringify(pingData, null, 2))
   const row = 1;
-  // const address = 'http://starbug1.local:1664'
-  const address = 'http://localhost:1664'
+  const address = 'http://starbug1.local:1664'
+
   if (!!pingData.error) {
     await VC100.postMessage('ping', {
       row,
