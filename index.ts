@@ -27,13 +27,18 @@ const ping = async (host: string): Promise<PingResult> => {
         return;
       }
 
+// 10 packets transmitted, 10 received, 0% packet loss, time 9013ms
+// rtt min/avg/max/mdev = 6.315/6.663/7.553/0.362 ms
+
       const lines = stdout.split('\n')
-      const packetsRegex = /^(?<tx>[0-9]*) packets transmitted, (?<rx>[0-9]*) packets received.*$/
+      const packetsRegex = /^(?<tx>[0-9]*) packets transmitted, (?<rx>[0-9]*) received.*$/
       const packetsMatch = lines.map(l => l.match(packetsRegex)?.groups).find(m => !!m)
-      const timesRegex = /^round-trip min\/avg\/max\/stddev = (?<min>[\.|0-9]*)\/(?<avg>[\.|0-9]*)\/(?<max>[\.|0-9]*)\/(?<stddev>[\.|0-9]*) ms$/
+      const timesRegex = /^rtt min\/avg\/max\/mdev = (?<min>[\.|0-9]*)\/(?<avg>[\.|0-9]*)\/(?<max>[\.|0-9]*)\/(?<stddev>[\.|0-9]*) ms$/
       const timesMatch = lines.map(l => l.match(timesRegex)?.groups).find(m => !!m)
 
       if (!packetsMatch || !timesMatch) {
+	console.log({GDR: '', packetsMatch, timesMatch})
+	console.log(stdout)
         res({ host, error: {error: 'could not parse ping output'}})
       } else {
         res({ host, success: { 
