@@ -74,7 +74,7 @@ const main = async () => {
       warn = true;
     }
     const jitter = data.max - data.min
-    if (jitter > (data.min * 2) {
+    if (jitter > (data.min * 2)) {
       warn=true;
     }
 
